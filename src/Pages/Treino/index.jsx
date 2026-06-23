@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Check, Trophy, ChevronLeft, RotateCcw } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
-import { getTreinoById, getExerciciosDoTreino } from '../../data/mock'
+import { api } from '../../services/api'
 
 function formatTime(s) {
   const m = Math.floor(s / 60).toString().padStart(2, '0')
@@ -13,14 +13,28 @@ function formatTime(s) {
 export default function Treino() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { estudante } = useAuth()
+  const { treinos, refreshMe } = useAuth()
 
-  const treino = getTreinoById(estudante, id)
-  const exercicios = getExerciciosDoTreino(treino)
+  const treino = treinos.find((t) => t.id === id)
+
+  // Achata estrutura da API: { exercicio: {...}, series, repeticoes, carga }
+  const exercicios = treino
+    ? treino.exercicios.map((te) => ({
+        id:         te.exercicio.id,
+        teId:       te.id,
+        nome:       te.exercicio.nome,
+        grupo:      te.exercicio.grupo,
+        gifUrl:     te.exercicio.gifUrl,
+        series:     te.series,
+        repeticoes: te.repeticoes,
+        carga:      te.carga ?? '-',
+      }))
+    : []
 
   const [isRunning, setIsRunning] = useState(false)
-  const [seconds, setSeconds] = useState(0)
-  const [done, setDone] = useState({})
+  const [seconds, setSeconds]     = useState(0)
+  const [done, setDone]           = useState({})
+  const [salvando, setSalvando]   = useState(false)
 
   useEffect(() => {
     if (!isRunning) return
@@ -43,14 +57,32 @@ export default function Treino() {
     setDone((prev) => ({ ...prev, [exId]: !prev[exId] }))
   }
 
-  function handleIniciar() {
-    setIsRunning((v) => !v)
-  }
-
   function handleReset() {
     setSeconds(0)
     setIsRunning(false)
     setDone({})
+  }
+
+  async function handleFinalizar() {
+    setSalvando(true)
+    try {
+      await api.registrarSessao({
+        treinoId: treino.id,
+        duracaoSegundos: seconds,
+        exerciciosFeitos: exercicios
+          .filter((ex) => done[ex.id])
+          .map((ex) => ({
+            exercicioId: ex.id,
+            series: Array(ex.series).fill({ reps: ex.repeticoes, carga: 0 }),
+          })),
+      })
+      await refreshMe()
+    } catch {
+      // falha silenciosa — não bloqueia navegação
+    } finally {
+      setSalvando(false)
+      navigate('/treinos')
+    }
   }
 
   return (
@@ -78,12 +110,7 @@ export default function Treino() {
             {/* GIF */}
             <div className="w-16 h-16 rounded-xl bg-gray-100 shrink-0 overflow-hidden">
               {ex.gifUrl ? (
-                <img
-                  src={ex.gifUrl}
-                  alt={ex.nome}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                />
+                <img src={ex.gifUrl} alt={ex.nome} className="w-full h-full object-cover" loading="lazy" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="text-xs text-gray-400">GIF</span>
@@ -134,7 +161,7 @@ export default function Treino() {
         </button>
 
         <button
-          onClick={handleIniciar}
+          onClick={() => setIsRunning((v) => !v)}
           className={`w-16 h-16 rounded-full shadow-xl flex flex-col items-center justify-center gap-0.5 active:scale-95 transition-all ${
             isRunning ? 'bg-red-500' : 'bg-[#0056D2]'
           }`}
@@ -146,8 +173,9 @@ export default function Treino() {
         </button>
 
         <button
-          onClick={() => navigate('/treinos')}
-          className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-500 active:scale-95 transition-transform"
+          onClick={handleFinalizar}
+          disabled={salvando}
+          className="w-12 h-12 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-500 active:scale-95 transition-transform disabled:opacity-60"
         >
           <Check size={18} />
         </button>

@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import { Dumbbell, ChevronRight, LogOut } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
-import { getTreinoById } from '../../data/mock'
+import { formatCurrency } from '../../services/api'
 
 export default function Home() {
-  const { estudante, logout } = useAuth()
+  const { estudante, treinos, logout } = useAuth()
   const navigate = useNavigate()
 
   const progresso = (estudante.sessoesRealizadas / estudante.sessoesTotal) * 100
-  const proximoTreino = getTreinoById(estudante, estudante.proximoTreinoId)
+  const proximoTreino = treinos.find((t) => t.id === estudante.proximoTreinoId) ?? treinos[0]
 
   return (
     <div className="flex flex-col min-h-full">
@@ -23,7 +23,9 @@ export default function Home() {
             <p className="font-semibold text-sm leading-snug truncate">{estudante.nome}</p>
             <p className="text-xs text-blue-100 mt-0.5">
               Faturas pendentes{' '}
-              <span className="font-semibold text-white">{estudante.faturasPendentes}</span>
+              <span className="font-semibold text-white">
+                {formatCurrency(estudante.faturasPendentes)}
+              </span>
             </p>
           </div>
           <button onClick={logout} className="p-2 rounded-full bg-white/10 active:bg-white/20">

@@ -8,8 +8,9 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0056D2] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0056D2] flex flex-col items-center justify-center gap-4">
         <div className="w-8 h-8 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+        <p className="text-white/60 text-xs">Conectando ao servidor...</p>
       </div>
     )
   }

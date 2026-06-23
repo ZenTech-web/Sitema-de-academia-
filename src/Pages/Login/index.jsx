@@ -1,9 +1,26 @@
+import { useState } from 'react'
 import { Dumbbell } from 'lucide-react'
-import { estudantes } from '../../data/mock'
 import { useAuth } from '../../context/AuthContext'
 
 export default function Login() {
   const { login } = useAuth()
+  const [email, setEmail]     = useState('')
+  const [senha, setSenha]     = useState('')
+  const [loading, setLoading] = useState(false)
+  const [erro, setErro]       = useState(null)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setLoading(true)
+    setErro(null)
+    try {
+      await login(email, senha)
+    } catch (err) {
+      setErro(err.message || 'E-mail ou senha incorretos')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#0056D2] flex flex-col items-center justify-center px-6 gap-8">
@@ -13,34 +30,44 @@ export default function Login() {
           <Dumbbell size={40} className="text-[#0056D2]" />
         </div>
         <h1 className="text-3xl font-extrabold text-white tracking-tight">PowerFit</h1>
-        <p className="text-blue-200 text-sm">Selecione seu perfil para entrar</p>
+        <p className="text-blue-200 text-sm">Entre com sua conta</p>
       </div>
 
-      {/* Lista de alunos */}
-      <div className="w-full max-w-sm flex flex-col gap-3">
-        {estudantes.map((e) => (
-          <button
-            key={e.id}
-            onClick={() => login(e.id)}
-            className="bg-white rounded-2xl px-5 py-4 flex items-center gap-4 shadow-md active:scale-[0.97] transition-transform text-left"
-          >
-            <div className="w-12 h-12 rounded-full bg-[#0056D2] flex items-center justify-center shrink-0">
-              <span className="text-white font-bold text-sm">{e.iniciais}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-gray-800 truncate">{e.nome}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{e.objetivo}</p>
-            </div>
-            {parseFloat(e.faturasPendentes.replace(/[^0-9,]/g, '').replace(',', '.')) > 0 && (
-              <span className="text-xs font-bold text-red-500 bg-red-50 px-2 py-1 rounded-full shrink-0">
-                {e.faturasPendentes}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
+      {/* Formulário */}
+      <form onSubmit={handleSubmit} className="w-full max-w-sm flex flex-col gap-3">
+        <input
+          type="email"
+          placeholder="E-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          autoComplete="email"
+          className="bg-white rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 outline-none text-sm w-full"
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+          required
+          autoComplete="current-password"
+          className="bg-white rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 outline-none text-sm w-full"
+        />
 
-      <p className="text-blue-300 text-xs">MVP — sem autenticação real</p>
+        {erro && (
+          <p className="text-red-200 text-xs text-center bg-red-500/20 rounded-xl px-3 py-2">
+            {erro}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-white text-[#0056D2] font-bold rounded-2xl py-3.5 text-sm mt-1 active:scale-[0.98] transition-transform disabled:opacity-60"
+        >
+          {loading ? 'Entrando...' : 'Entrar'}
+        </button>
+      </form>
     </div>
   )
 }

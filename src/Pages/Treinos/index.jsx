@@ -2,12 +2,18 @@ import { useNavigate } from 'react-router-dom'
 import { ChevronRight, Trophy } from 'lucide-react'
 import Header from '../../Components/Header'
 import { useAuth } from '../../context/AuthContext'
-import { getTreinoById } from '../../data/mock'
+import { formatDate } from '../../services/api'
 
 export default function Treinos() {
-  const { estudante } = useAuth()
+  const { estudante, treinos } = useAuth()
   const navigate = useNavigate()
-  const ultimoTreino = getTreinoById(estudante, estudante.ultimoTreinoId)
+
+  const ultimoTreino = treinos.find((t) => t.id === estudante.ultimoTreinoId)
+
+  function getBadge(treino) {
+    if (treino.sigla) return treino.sigla
+    return treino.nome.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
+  }
 
   return (
     <div className="flex flex-col min-h-full">
@@ -25,15 +31,17 @@ export default function Treinos() {
         {/* Meta e data */}
         <div className="bg-white rounded-2xl shadow-sm px-4 py-3 flex justify-between items-center">
           <div className="text-xs text-gray-500">
-            <span className="font-medium text-gray-700">Objetivo:</span> {estudante.objetivo}
+            <span className="font-medium text-gray-700">Objetivo:</span>{' '}
+            {estudante.objetivo ?? 'Não definido'}
           </div>
           <div className="text-xs text-gray-500">
-            <span className="font-medium text-gray-700">Início:</span> {estudante.dataInicio}
+            <span className="font-medium text-gray-700">Início:</span>{' '}
+            {formatDate(estudante.dataInicio)}
           </div>
         </div>
 
         {/* Cards de treino */}
-        {estudante.treinos.map((treino) => (
+        {treinos.map((treino) => (
           <button
             key={treino.id}
             onClick={() => navigate(`/treino/${treino.id}`)}
@@ -41,7 +49,7 @@ export default function Treinos() {
           >
             <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
               <span className="text-xl font-extrabold text-[#0056D2] leading-none text-center px-1">
-                {treino.sigla ?? treino.nome.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()}
+                {getBadge(treino)}
               </span>
             </div>
             <div className="flex-1 min-w-0">
@@ -64,7 +72,7 @@ export default function Treinos() {
           <div className="bg-white rounded-2xl shadow-sm px-4 py-4 flex items-center gap-3">
             <Trophy size={22} className="text-[#0056D2] shrink-0" />
             <p className="text-sm text-gray-700">
-              Último treino registrado no app:{' '}
+              Último treino registrado:{' '}
               <span className="font-extrabold text-[#0056D2]">{ultimoTreino.nome}</span>
             </p>
           </div>
