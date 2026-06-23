@@ -57,7 +57,7 @@ export default function Treinos() {
                 Grupos musculares
               </p>
               <p className="text-sm font-semibold text-gray-800 leading-snug">
-                {treino.musculos.join(' / ')}
+                {(treino.musculos ?? []).join(' / ') || 'Sem grupo definido'}
               </p>
               <p className="text-xs text-gray-400 mt-1">
                 {treino.exercicios.length} exercícios

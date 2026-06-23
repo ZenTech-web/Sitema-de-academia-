@@ -164,6 +164,7 @@ function TabTreinos({ alunoInicial }) {
   const [salvando, setSalvando]         = useState(false)
   const [ok, setOk]                     = useState(false)
   const [erro, setErro]                 = useState(null)
+  const [busca, setBusca]               = useState('')
 
   // Novo treino form
   const [formNome, setFormNome]         = useState('')
@@ -203,7 +204,14 @@ function TabTreinos({ alunoInicial }) {
     setSel((prev) => ({ ...prev, [id]: { ...prev[id], [k]: v } }))
   }
 
-  const grupos = [...new Set(exerciciosDisp.map((e) => e.grupo))].sort()
+  const termoBusca = busca.toLowerCase().trim()
+  const exerciciosFiltrados = termoBusca
+    ? exerciciosDisp.filter(
+        (e) => e.nome.toLowerCase().includes(termoBusca) || e.grupo.toLowerCase().includes(termoBusca)
+      )
+    : exerciciosDisp
+
+  const grupos = [...new Set(exerciciosFiltrados.map((e) => e.grupo))].sort()
 
   const musculosAuto = [
     ...new Set(
@@ -344,13 +352,23 @@ function TabTreinos({ alunoInicial }) {
                 <p className="text-xs text-gray-500 font-medium px-1 mb-2">
                   Exercícios ({Object.keys(selecionados).length} selecionado(s))
                 </p>
+                <input
+                  type="text"
+                  placeholder="Buscar exercício ou grupo..."
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-[#0056D2]/50 mb-3"
+                />
                 <div className="flex flex-col gap-2">
+                  {grupos.length === 0 && (
+                    <p className="text-xs text-gray-400 text-center py-3">Nenhum exercício encontrado</p>
+                  )}
                   {grupos.map((grupo) => (
                     <div key={grupo}>
                       <p className="text-[10px] text-gray-400 uppercase tracking-wider font-bold px-1 mb-1">
                         {grupo}
                       </p>
-                      {exerciciosDisp.filter((e) => e.grupo === grupo).map((ex) => (
+                      {exerciciosFiltrados.filter((e) => e.grupo === grupo).map((ex) => (
                         <div key={ex.id} className="mb-1">
                           <button
                             type="button"

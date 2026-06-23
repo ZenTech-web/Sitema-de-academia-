@@ -7,8 +7,9 @@ export default function Home() {
   const { estudante, treinos, logout } = useAuth()
   const navigate = useNavigate()
 
-  const progresso = (estudante.sessoesRealizadas / estudante.sessoesTotal) * 100
-  const proximoTreino = treinos.find((t) => t.id === estudante.proximoTreinoId) ?? treinos[0]
+  const progresso = estudante.sessoesTotal > 0
+    ? Math.min(100, (estudante.sessoesRealizadas / estudante.sessoesTotal) * 100)
+    : 0
 
   return (
     <div className="flex flex-col min-h-full">
@@ -71,29 +72,54 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Card Próximo treino */}
-        {proximoTreino && (
-          <button
-            onClick={() => navigate(`/treino/${proximoTreino.id}`)}
-            className="bg-white rounded-2xl shadow-sm px-4 py-4 flex items-center justify-between w-full text-left active:scale-[0.98] transition-transform"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <Dumbbell size={20} className="text-[#0056D2]" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 font-medium">A seguir</p>
-                <p className="text-base font-bold text-gray-800">
-                  Próximo treino:{' '}
-                  <span className="text-[#0056D2]">{proximoTreino.nome}</span>
-                </p>
-              </div>
-            </div>
-            <ChevronRight size={20} className="text-gray-300" />
-          </button>
+        {/* Lista de treinos */}
+        {treinos.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-sm px-4 py-8 flex flex-col items-center gap-2">
+            <Dumbbell size={36} className="text-gray-200" />
+            <p className="text-sm text-gray-400 font-medium">Nenhum treino cadastrado</p>
+            <p className="text-xs text-gray-300 text-center">Fale com seu professor para montar seu treino</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <p className="text-xs text-gray-500 uppercase tracking-wider font-medium px-1">
+              Escolha seu treino
+            </p>
+            {treinos.map((treino) => {
+              const isProximo = treino.id === (estudante.proximoTreinoId ?? treinos[0]?.id)
+              const grupos = [...new Set(treino.exercicios.map((te) => te.exercicio?.grupo).filter(Boolean))]
+              return (
+                <button
+                  key={treino.id}
+                  onClick={() => navigate(`/treino/${treino.id}`)}
+                  className="bg-white rounded-2xl shadow-sm px-4 py-4 flex items-center justify-between w-full text-left active:scale-[0.98] transition-transform"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isProximo ? 'bg-[#0056D2]' : 'bg-blue-50'}`}>
+                      <Dumbbell size={20} className={isProximo ? 'text-white' : 'text-[#0056D2]'} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <p className="text-base font-bold text-gray-800">{treino.nome}</p>
+                        {isProximo && (
+                          <span className="text-[10px] font-bold text-white bg-[#0056D2] rounded-full px-2 py-0.5">
+                            PRÓXIMO
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-400">
+                        {grupos.join(' / ')} · {treino.exercicios.length} exercício(s)
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight size={20} className="text-gray-300 shrink-0" />
+                </button>
+              )
+            })}
+          </div>
         )}
 
       </div>
     </div>
   )
 }
+
