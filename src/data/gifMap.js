@@ -1,0 +1,103 @@
+export const gifPorNome = {
+  // ── PEITO ──────────────────────────────────────────────────────────────────
+  'Supino Reto':                       '/gifs/supino_reto.gif',
+  'Supino Inclinado':                  '/gifs/supino_inclinado.gif',
+  'Supino Declinado':                  '/gifs/supino_declinado.gif',
+  'Supino c/ Halteres':                '/gifs/supino_halteres.gif',
+  'Crossover':                         '/gifs/crossover.gif',
+  'Crucifixo':                         '/gifs/crucifixo.gif',
+  'Chest Press na Máquina':            '/gifs/chest_press_maquina.gif',
+  'Flexão de Braço':                   '/gifs/flexao_braco.gif',
+  'Flexão Inclinada':                  '/gifs/flexao_inclinada.gif',
+  'Flexão Declinada':                  '/gifs/flexao_declinada.gif',
+  'Flexão com Palmas Abertas':         '/gifs/flexao_palmas_abertas.gif',
+
+  // ── COSTAS ─────────────────────────────────────────────────────────────────
+  'Remada Convergente':                '/gifs/remada_convergente.gif',
+  'Remada Baixa':                      '/gifs/remada_baixa.gif',
+  'Remada Curvada c/ Barra':           '/gifs/remada_curvada_barra.gif',
+  'Remada Unilateral':                 '/gifs/remada_unilateral.gif',
+  'Puxada Alta Aberta':                '/gifs/puxada_alta_aberta.gif',
+  'Puxada Triângulo':                  '/gifs/puxada_triangulo.gif',
+  'Pull Down':                         '/gifs/pull_down.gif',
+  'Barra Fixa':                        '/gifs/barra_fixa.gif',
+  'Hiperextensão Lombar':              '/gifs/hiperextensao_lombar.gif',
+
+  // ── OMBRO ──────────────────────────────────────────────────────────────────
+  'Desenvolvimento c/ Halteres':       '/gifs/desenvolvimento_halteres.gif',
+  'Desenvolvimento c/ Barra':          '/gifs/desenvolvimento_barra.gif',
+  'Desenvolvimento na Máquina':        '/gifs/desenvolvimento_maquina.gif',
+  'Arnold Press':                      '/gifs/arnold_press.gif',
+  'Elevação Lateral':                  '/gifs/elevacao_lateral.gif',
+  'Elevação Frontal':                  '/gifs/elevacao_frontal.gif',
+  'Elevação Frontal c/ Placa':         '/gifs/elevacao_frontal_placa.gif',
+  'Remada Alta':                       '/gifs/remada_alta.gif',
+  'Face Pull':                         '/gifs/face_pull.gif',
+
+  // ── BÍCEPS ─────────────────────────────────────────────────────────────────
+  'Rosca Direta':                      '/gifs/rosca_direta.gif',
+  'Rosca Direta c/ Barra':             '/gifs/rosca_barra.gif',
+  'Rosca Alternada':                   '/gifs/rosca_alternada.gif',
+  'Rosca Martelo':                     '/gifs/rosca_martelo.gif',
+  'Rosca Concentrada':                 '/gifs/rosca_concentrada.gif',
+  'Rosca Scott':                       '/gifs/rosca_scott.gif',
+  'Rosca no Cabo':                     '/gifs/rosca_cabo.gif',
+
+  // ── TRÍCEPS ────────────────────────────────────────────────────────────────
+  'Tríceps Pulley':                    '/gifs/triceps_pulley.gif',
+  'Tríceps Pulley Unilateral':         '/gifs/triceps_cabo_unilateral.gif',
+  'Tríceps Francês':                   '/gifs/triceps_frances.gif',
+  'Extensão Overhead c/ Haltere':      '/gifs/extensao_overhead.gif',
+  'Kickback':                          '/gifs/kickback.gif',
+  'Mergulho (Dips)':                   '/gifs/mergulho.gif',
+  'Tríceps na Máquina':                '/gifs/triceps_maquina.gif',
+
+  // ── PERNA ──────────────────────────────────────────────────────────────────
+  'Leg Press':                         '/gifs/leg_press.gif',
+  'Cadeira Extensora':                 '/gifs/cadeira_extensora.gif',
+  'Cadeira Flexora':                   '/gifs/cadeira_flexora.gif',
+  'Mesa Flexora':                      '/gifs/mesa_flexora.gif',
+  'Agachamento Livre':                 '/gifs/agachamento_livre.gif',
+  'Agachamento Sumô':                  '/gifs/agachamento_sumo.gif',
+  'Agachamento Búlgaro':               '/gifs/agachamento_bulgaro.gif',
+  'Agachamento c/ Bola na Parede':     '/gifs/agachamento_bola_parede.gif',
+  'Afundo':                            '/gifs/afundo.gif',
+  'Passada':                           '/gifs/passada.gif',
+  'Stiff':                             '/gifs/stiff.gif',
+  'Elevação de Quadril':               '/gifs/elevacao_quadril.gif',
+  'Hip Thrust c/ Barra':               '/gifs/hip_thrust_barra.gif',
+  'Glúteo na Máquina':                 '/gifs/gluteo_maquina.gif',
+  'Extensão de Quadril no Cabo':       '/gifs/extensao_quadril_cabo.gif',
+  'Abdução de Quadril c/ Peso no Pé':  '/gifs/abducao_peso_pe.gif',
+  'Elevação de Pernas c/ Peso no Pé':  '/gifs/elevacao_pernas_peso_pe.gif',
+  'Extensão de Perna Deitada c/ Peso': '/gifs/extensao_perna_peso.gif',
+  'Adutora na Máquina':                '/gifs/adutora_maquina.gif',
+  'Abdutora na Máquina':               '/gifs/abdutora_maquina.gif',
+
+  // ── PANTURRILHA ────────────────────────────────────────────────────────────
+  'Panturrilha no Smith':              '/gifs/panturrilha_smith.gif',
+  'Panturrilha Sentado':               '/gifs/panturrilha_sentado.gif',
+  'Panturrilha em Pé Livre':           '/gifs/panturrilha_pe_livre.gif',
+
+  // ── ABDOME ─────────────────────────────────────────────────────────────────
+  'Abdominal Crunch':                  '/gifs/abdominal_crunch.gif',
+  'Abdominal Infra':                   '/gifs/abdominal_infra.gif',
+  'Abdominal Bicicleta':               '/gifs/abdominal_bicicleta.gif',
+  'Abdominal c/ Bola':                 '/gifs/abdominal_bola.gif',
+  'Prancha':                           '/gifs/prancha.gif',
+  'Prancha Lateral':                   '/gifs/prancha_lateral.gif',
+  'Elevação de Pernas':                '/gifs/elevacao_pernas.gif',
+  'Russian Twist':                     '/gifs/russian_twist.gif',
+  'Russian Twist c/ Placa':            '/gifs/russian_twist_placa.gif',
+  'Dead Bug':                          '/gifs/dead_bug.gif',
+  'Abdominal Oblíquo':                 '/gifs/abdominal_obliquo.gif',
+
+  // ── CARDIO / FUNCIONAL ─────────────────────────────────────────────────────
+  'Polichinelo':                       '/gifs/polichinelo.gif',
+  'Burpee':                            '/gifs/burpee.gif',
+  'Mountain Climber':                  '/gifs/mountain_climber.gif',
+  'Agachamento com Salto':             '/gifs/agachamento_salto.gif',
+  'Pular Corda':                       '/gifs/pular_corda.gif',
+  'Corrida Estacionária':              '/gifs/corrida_estacionaria.gif',
+  'Skipping':                          '/gifs/skipping.gif',
+}

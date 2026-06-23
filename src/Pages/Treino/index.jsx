@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Check, Trophy, ChevronLeft, RotateCcw } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { api } from '../../services/api'
+import { gifPorNome } from '../../data/gifMap'
 
 function formatTime(s) {
   const m = Math.floor(s / 60).toString().padStart(2, '0')
@@ -24,7 +25,7 @@ export default function Treino() {
         teId:       te.id,
         nome:       te.exercicio.nome,
         grupo:      te.exercicio.grupo,
-        gifUrl:     te.exercicio.gifUrl,
+        gifUrl:     te.exercicio.gifUrl || gifPorNome[te.exercicio.nome] || '',
         series:     te.series,
         repeticoes: te.repeticoes,
         carga:      te.carga ?? '-',
