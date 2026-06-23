@@ -51,6 +51,15 @@ export const api = {
 
   // ── Biblioteca de exercícios ────────────────────────────
   getExercicios: () => request('/exercicios'),
+
+  // ── Admin ───────────────────────────────────────────────
+  admin: {
+    getAlunos:        ()      => request('/admin/usuarios'),
+    criarAluno:       (body)  => request('/admin/usuarios', { method: 'POST', body: JSON.stringify(body) }),
+    getTreinosAluno:  (id)    => request(`/admin/usuarios/${id}/treinos`),
+    criarTreinoAluno: (id, b) => request(`/admin/usuarios/${id}/treinos`, { method: 'POST', body: JSON.stringify(b) }),
+    getExercicios:    ()      => request('/admin/exercicios'),
+  },
 }
 
 // ── Helpers de formatação ────────────────────────────────

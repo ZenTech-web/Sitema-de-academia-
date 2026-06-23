@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import BottomNav from './Components/BottomNav'
 import { useAuth } from './context/AuthContext'
 import Login from './Pages/Login'
+import Admin from './Pages/Admin'
 
 export default function App() {
   const { estudante, loading } = useAuth()
@@ -16,6 +17,8 @@ export default function App() {
   }
 
   if (!estudante) return <Login />
+
+  if (estudante.role === 'ADMIN') return <Admin />
 
   return (
     <div className="min-h-screen bg-[#f0f0f0] flex flex-col">
