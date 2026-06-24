@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calculator, BarChart2, Ruler, Pencil, Trash2 } from 'lucide-react'
+import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calculator, BarChart2, Ruler, Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts'
@@ -36,6 +36,7 @@ function TabAlunos({ onGerenciarTreinos }) {
   const [salvandoEdit, setSalvando]   = useState(false)
   const [erroEdit, setErroEdit]       = useState(null)
   const [okEdit, setOkEdit]           = useState(false)
+  const [mostrarSenhaEdit, setMostrarEdit] = useState(false)
 
   useEffect(() => {
     api.admin.getAlunos()
@@ -125,8 +126,22 @@ function TabAlunos({ onGerenciarTreinos }) {
               <Field label="Data início" type="date" className="flex-1"
                 value={formEdit.dataInicio} onChange={updEdit('dataInicio')} />
             </div>
-            <Field label="Nova senha (vazio = manter atual)" type="password" placeholder="••••••••"
-              value={formEdit.novaSenha} onChange={updEdit('novaSenha')} />
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500 font-medium px-1">Nova senha (vazio = manter atual)</label>
+              <div className="relative">
+                <input
+                  type={mostrarSenhaEdit ? 'text' : 'password'}
+                  placeholder="••••••••"
+                  value={formEdit.novaSenha}
+                  onChange={updEdit('novaSenha')}
+                  className="bg-white rounded-2xl px-4 py-3 text-sm text-gray-800 shadow-sm border border-gray-100 outline-none focus:border-[#0056D2]/50 w-full pr-12"
+                />
+                <button type="button" onClick={() => setMostrarEdit((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 p-1">
+                  {mostrarSenhaEdit ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
             {erroEdit && (
               <p className="text-red-500 text-xs text-center bg-red-50 rounded-xl py-2 px-3">{erroEdit}</p>
             )}
@@ -182,10 +197,11 @@ function TabAlunos({ onGerenciarTreinos }) {
 // ── Tab: Novo Aluno ───────────────────────────────────────
 function TabNovoAluno({ onSuccess }) {
   const INIT = { nome: '', email: '', senha: '', objetivo: '', sessoesTotal: '90', dataInicio: '' }
-  const [form, setForm] = useState(INIT)
-  const [loading, setLoading] = useState(false)
-  const [erro, setErro] = useState(null)
-  const [ok, setOk] = useState(false)
+  const [form, setForm]             = useState(INIT)
+  const [loading, setLoading]       = useState(false)
+  const [erro, setErro]             = useState(null)
+  const [ok, setOk]                 = useState(false)
+  const [mostrarSenha, setMostrar]  = useState(false)
 
   function upd(k) {
     return (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
@@ -223,8 +239,23 @@ function TabNovoAluno({ onSuccess }) {
           value={form.nome} onChange={upd('nome')} />
         <Field label="E-mail *" required type="email" placeholder="joao@email.com"
           value={form.email} onChange={upd('email')} />
-        <Field label="Senha *" required type="password" placeholder="••••••••"
-          value={form.senha} onChange={upd('senha')} />
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-gray-500 font-medium px-1">Senha *</label>
+          <div className="relative">
+            <input
+              required
+              type={mostrarSenha ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={form.senha}
+              onChange={upd('senha')}
+              className="bg-white rounded-2xl px-4 py-3 text-sm text-gray-800 shadow-sm border border-gray-100 outline-none focus:border-[#0056D2]/50 w-full pr-12"
+            />
+            <button type="button" onClick={() => setMostrar((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 p-1">
+              {mostrarSenha ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+        </div>
         <Field label="Objetivo" placeholder="ex: Hipertrofia"
           value={form.objetivo} onChange={upd('objetivo')} />
 

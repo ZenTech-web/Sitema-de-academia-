@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { Dumbbell } from 'lucide-react'
+import { Dumbbell, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 export default function Login() {
   const { login } = useAuth()
-  const [email, setEmail]     = useState('')
-  const [senha, setSenha]     = useState('')
-  const [loading, setLoading] = useState(false)
-  const [erro, setErro]       = useState(null)
+  const [email, setEmail]           = useState('')
+  const [senha, setSenha]           = useState('')
+  const [mostrarSenha, setMostrar]  = useState(false)
+  const [loading, setLoading]       = useState(false)
+  const [erro, setErro]             = useState(null)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -44,15 +45,25 @@ export default function Login() {
           autoComplete="email"
           className="bg-white rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 outline-none text-sm w-full"
         />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          required
-          autoComplete="current-password"
-          className="bg-white rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 outline-none text-sm w-full"
-        />
+
+        <div className="relative">
+          <input
+            type={mostrarSenha ? 'text' : 'password'}
+            placeholder="Senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            required
+            autoComplete="current-password"
+            className="bg-white rounded-2xl px-4 py-3.5 text-gray-800 placeholder-gray-400 outline-none text-sm w-full pr-12"
+          />
+          <button
+            type="button"
+            onClick={() => setMostrar((v) => !v)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"
+          >
+            {mostrarSenha ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
 
         {erro && (
           <p className="text-red-200 text-xs text-center bg-red-500/20 rounded-xl px-3 py-2">
