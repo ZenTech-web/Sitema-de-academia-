@@ -305,13 +305,20 @@ export default function Treino() {
       {/* Controles */}
       <div className="flex-1 flex flex-col items-center justify-center py-6">
         {todosFeitos ? (
-          <button
-            onClick={handleFinalizar}
-            disabled={salvando}
-            className="bg-green-500 text-white font-bold text-base rounded-2xl px-12 py-4 shadow-xl active:scale-95 transition-transform disabled:opacity-60"
-          >
-            {salvando ? 'Salvando...' : '🏆 Finalizar Treino'}
-          </button>
+          <div className="flex flex-col items-center gap-3">
+            {erroFinal && (
+              <p className="text-red-600 text-xs text-center bg-red-50 rounded-xl px-4 py-2 font-medium max-w-xs">
+                {erroFinal}
+              </p>
+            )}
+            <button
+              onClick={handleFinalizar}
+              disabled={salvando}
+              className="bg-green-500 text-white font-bold text-base rounded-2xl px-12 py-4 shadow-xl active:scale-95 transition-transform disabled:opacity-60"
+            >
+              {salvando ? 'Salvando...' : '🏆 Finalizar Treino'}
+            </button>
+          </div>
         ) : (
           <div className="flex items-center gap-5">
             <button

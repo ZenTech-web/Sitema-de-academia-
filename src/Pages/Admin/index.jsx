@@ -364,6 +364,7 @@ function TabTreinos({ alunoInicial }) {
     setSiglaManual(false)
     setSel({})
     setErro(null)
+    setBusca('')
   }
 
   function abrirEditar(treino) {
