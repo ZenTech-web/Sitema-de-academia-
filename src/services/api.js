@@ -79,5 +79,5 @@ export function formatCurrency(value) {
 export function formatDate(isoString) {
   if (!isoString) return '-'
   const d = new Date(isoString)
-  return d.toLocaleDateString('pt-BR')
+  return d.toLocaleDateString('pt-BR', { timeZone: 'UTC' })
 }
