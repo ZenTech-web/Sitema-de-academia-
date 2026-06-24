@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calculator, BarChart2, Ruler } from 'lucide-react'
+import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calculator, BarChart2, Ruler, Pencil, Trash2 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts'
@@ -29,14 +29,58 @@ function Field({ label, className = '', ...props }) {
 
 // ── Tab: Alunos ───────────────────────────────────────────
 function TabAlunos({ onGerenciarTreinos }) {
-  const [alunos, setAlunos] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [alunos, setAlunos]           = useState([])
+  const [loading, setLoading]         = useState(true)
+  const [alunoEditando, setEditando]  = useState(null)
+  const [formEdit, setFormEdit]       = useState({})
+  const [salvandoEdit, setSalvando]   = useState(false)
+  const [erroEdit, setErroEdit]       = useState(null)
+  const [okEdit, setOkEdit]           = useState(false)
 
   useEffect(() => {
     api.admin.getAlunos()
       .then((d) => setAlunos(d.filter((a) => a.role !== 'ADMIN')))
       .finally(() => setLoading(false))
   }, [])
+
+  function abrirEditar(a) {
+    setEditando(a)
+    setFormEdit({
+      nome:        a.nome        || '',
+      email:       a.email       || '',
+      objetivo:    a.objetivo    || '',
+      sessoesTotal: String(a.sessoesTotal || 90),
+      dataInicio:  a.dataInicio ? a.dataInicio.split('T')[0] : '',
+      novaSenha:   '',
+    })
+    setErroEdit(null)
+  }
+
+  function updEdit(k) { return (e) => setFormEdit((f) => ({ ...f, [k]: e.target.value })) }
+
+  async function handleSalvarEditar(e) {
+    e.preventDefault()
+    setSalvando(true)
+    setErroEdit(null)
+    try {
+      const body = {
+        nome:         formEdit.nome,
+        email:        formEdit.email,
+        objetivo:     formEdit.objetivo || undefined,
+        sessoesTotal: Number(formEdit.sessoesTotal) || 90,
+        dataInicio:   formEdit.dataInicio || undefined,
+      }
+      if (formEdit.novaSenha) body.senha = formEdit.novaSenha
+      const atualizado = await api.admin.editarAluno(alunoEditando.id, body)
+      setAlunos((prev) => prev.map((a) => a.id === atualizado.id ? atualizado : a))
+      setOkEdit(true)
+      setTimeout(() => { setOkEdit(false); setEditando(null) }, 1500)
+    } catch (err) {
+      setErroEdit(err.message)
+    } finally {
+      setSalvando(false)
+    }
+  }
 
   if (loading) return <Spinner />
 
@@ -53,28 +97,68 @@ function TabAlunos({ onGerenciarTreinos }) {
   return (
     <div className="flex flex-col gap-3 p-4">
       <p className="text-xs text-gray-400 font-medium px-1">{alunos.length} aluno(s) cadastrado(s)</p>
-      {alunos.map((a) => (
-        <div key={a.id} className="bg-white rounded-2xl shadow-sm px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-sm font-extrabold text-[#0056D2] shrink-0">
-              {a.iniciais}
+      {alunos.map((a) =>
+        alunoEditando?.id === a.id ? (
+          <form key={a.id} onSubmit={handleSalvarEditar} className="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-3">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Editar Aluno</p>
+              <button type="button" onClick={() => setEditando(null)} className="text-xs text-gray-400 underline underline-offset-2">
+                cancelar
+              </button>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-800 truncate">{a.nome}</p>
-              <p className="text-xs text-gray-400 truncate">{a.email}</p>
-              {a.objetivo && (
-                <p className="text-xs text-gray-500 mt-0.5 truncate">{a.objetivo}</p>
-              )}
+            <Field label="Nome completo *" required value={formEdit.nome} onChange={updEdit('nome')} />
+            <Field label="E-mail *" required type="email" value={formEdit.email} onChange={updEdit('email')} />
+            <Field label="Objetivo" placeholder="ex: Hipertrofia" value={formEdit.objetivo} onChange={updEdit('objetivo')} />
+            <div className="flex gap-3">
+              <Field label="Total sessões" type="number" min="1" className="flex-1"
+                value={formEdit.sessoesTotal} onChange={updEdit('sessoesTotal')} />
+              <Field label="Data início" type="date" className="flex-1"
+                value={formEdit.dataInicio} onChange={updEdit('dataInicio')} />
             </div>
-            <button
-              onClick={() => onGerenciarTreinos(a)}
-              className="text-xs font-bold text-[#0056D2] bg-blue-50 px-3 py-2 rounded-xl shrink-0 active:scale-95 transition-transform"
-            >
-              Treinos
+            <Field label="Nova senha (vazio = manter atual)" type="password" placeholder="••••••••"
+              value={formEdit.novaSenha} onChange={updEdit('novaSenha')} />
+            {erroEdit && (
+              <p className="text-red-500 text-xs text-center bg-red-50 rounded-xl py-2 px-3">{erroEdit}</p>
+            )}
+            {okEdit && (
+              <p className="text-green-600 text-sm text-center font-semibold bg-green-50 rounded-xl py-2">✓ Salvo!</p>
+            )}
+            <button type="submit" disabled={salvandoEdit}
+              className="bg-[#0056D2] text-white font-bold rounded-2xl py-3 text-sm disabled:opacity-60 active:scale-[0.98] transition-transform">
+              {salvandoEdit ? 'Salvando...' : 'Salvar Alterações'}
             </button>
+          </form>
+        ) : (
+          <div key={a.id} className="bg-white rounded-2xl shadow-sm px-4 py-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-full bg-blue-50 flex items-center justify-center text-sm font-extrabold text-[#0056D2] shrink-0">
+                {a.iniciais}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800 truncate">{a.nome}</p>
+                <p className="text-xs text-gray-400 truncate">{a.email}</p>
+                {a.objetivo && (
+                  <p className="text-xs text-gray-500 mt-0.5 truncate">{a.objetivo}</p>
+                )}
+              </div>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => abrirEditar(a)}
+                  className="p-2 rounded-xl bg-gray-50 text-gray-400 active:scale-95 transition-transform"
+                >
+                  <Pencil size={15} />
+                </button>
+                <button
+                  onClick={() => onGerenciarTreinos(a)}
+                  className="text-xs font-bold text-[#0056D2] bg-blue-50 px-3 py-2 rounded-xl active:scale-95 transition-transform"
+                >
+                  Treinos
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      )}
     </div>
   )
 }
@@ -164,6 +248,7 @@ function TabTreinos({ alunoInicial }) {
   const [exerciciosDisp, setEx]         = useState([])
   const [loadingTreinos, setLT]         = useState(false)
   const [showForm, setShowForm]         = useState(false)
+  const [editando, setEditando]         = useState(null)
   const [salvando, setSalvando]         = useState(false)
   const [ok, setOk]                     = useState(false)
   const [erro, setErro]                 = useState(null)
@@ -226,11 +311,40 @@ function TabTreinos({ alunoInicial }) {
 
   function resetForm() {
     setShowForm(false)
+    setEditando(null)
     setFormNome('')
     setFormSigla('')
     setSiglaManual(false)
     setSel({})
     setErro(null)
+  }
+
+  function abrirEditar(treino) {
+    setEditando(treino)
+    setFormNome(treino.nome)
+    setFormSigla(treino.sigla || '')
+    setSiglaManual(!!treino.sigla)
+    const sel = {}
+    treino.exercicios.forEach((te) => {
+      sel[te.exercicioId] = {
+        series:     String(te.series),
+        repeticoes: String(te.repeticoes),
+        carga:      te.carga != null ? String(te.carga) : '',
+      }
+    })
+    setSel(sel)
+    setShowForm(true)
+    setErro(null)
+  }
+
+  async function handleExcluirTreino(treinoId) {
+    if (!window.confirm('Excluir este treino? Esta ação não pode ser desfeita.')) return
+    try {
+      await api.admin.excluirTreinoAluno(alunoId, treinoId)
+      setTreinos((prev) => prev.filter((t) => t.id !== treinoId))
+    } catch {
+      // silencioso
+    }
   }
 
   async function handleSalvar(e) {
@@ -249,14 +363,24 @@ function TabTreinos({ alunoInicial }) {
           ordem:       i,
         }))
 
-      const novo = await api.admin.criarTreinoAluno(alunoId, {
-        nome:      formNome,
-        sigla:     formSigla || undefined,
-        musculos:  musculosAuto ? musculosAuto.split(', ') : [],
-        ordem:     treinos.length,
-        exercicios: exerciciosList,
-      })
-      setTreinos((prev) => [...prev, novo])
+      if (editando) {
+        const atualizado = await api.admin.editarTreinoAluno(alunoId, editando.id, {
+          nome:       formNome,
+          sigla:      formSigla || undefined,
+          musculos:   musculosAuto ? musculosAuto.split(', ') : [],
+          exercicios: exerciciosList,
+        })
+        setTreinos((prev) => prev.map((t) => t.id === atualizado.id ? atualizado : t))
+      } else {
+        const novo = await api.admin.criarTreinoAluno(alunoId, {
+          nome:       formNome,
+          sigla:      formSigla || undefined,
+          musculos:   musculosAuto ? musculosAuto.split(', ') : [],
+          ordem:      treinos.length,
+          exercicios: exerciciosList,
+        })
+        setTreinos((prev) => [...prev, novo])
+      }
       resetForm()
       setOk(true)
       setTimeout(() => setOk(false), 2500)
@@ -308,6 +432,20 @@ function TabTreinos({ alunoInicial }) {
                       {t.musculos?.join(' / ')} · {t.exercicios?.length ?? 0} exercício(s)
                     </p>
                   </div>
+                  <div className="flex gap-1.5 shrink-0">
+                    <button
+                      onClick={() => abrirEditar(t)}
+                      className="p-2 rounded-xl bg-gray-50 text-gray-400 active:scale-95 transition-transform"
+                    >
+                      <Pencil size={14} />
+                    </button>
+                    <button
+                      onClick={() => handleExcluirTreino(t.id)}
+                      className="p-2 rounded-xl bg-red-50 text-red-400 active:scale-95 transition-transform"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </>
@@ -330,7 +468,7 @@ function TabTreinos({ alunoInicial }) {
 
           {showForm && (
             <form onSubmit={handleSalvar} className="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-4">
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Novo Treino</p>
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">{editando ? 'Editar Treino' : 'Novo Treino'}</p>
 
               <div className="flex gap-3">
                 <Field label="Nome do treino *" required placeholder="ex: Treino A" className="flex-1"
@@ -429,7 +567,7 @@ function TabTreinos({ alunoInicial }) {
                   disabled={salvando || !formNome || Object.keys(selecionados).length === 0}
                   className="flex-1 bg-[#0056D2] text-white font-bold rounded-2xl py-3 text-sm disabled:opacity-50 active:scale-[0.98] transition-transform"
                 >
-                  {salvando ? 'Salvando...' : 'Salvar Treino'}
+                  {salvando ? 'Salvando...' : editando ? 'Atualizar Treino' : 'Salvar Treino'}
                 </button>
               </div>
             </form>

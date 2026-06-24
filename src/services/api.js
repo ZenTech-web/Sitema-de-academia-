@@ -25,6 +25,8 @@ async function request(path, options = {}) {
     throw new Error('Sessão expirada')
   }
 
+  if (res.status === 204) return null
+
   const data = await res.json()
   if (!res.ok) throw new Error(data.error || 'Erro na requisição')
   return data
@@ -68,6 +70,9 @@ export const api = {
     getAvaliacoesAluno:  (id)       => request(`/admin/usuarios/${id}/avaliacoes`),
     criarAvaliacaoAluno: (id, body) => request(`/admin/usuarios/${id}/avaliacoes`, { method: 'POST', body: JSON.stringify(body) }),
     getStats:            ()         => request('/admin/stats'),
+    editarAluno:         (id, body) => request(`/admin/usuarios/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+    editarTreinoAluno:   (alunoId, treinoId, body) => request(`/admin/usuarios/${alunoId}/treinos/${treinoId}`, { method: 'PATCH', body: JSON.stringify(body) }),
+    excluirTreinoAluno:  (alunoId, treinoId) => request(`/admin/usuarios/${alunoId}/treinos/${treinoId}`, { method: 'DELETE' }),
   },
 }
 
