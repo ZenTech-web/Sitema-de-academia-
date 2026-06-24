@@ -35,6 +35,7 @@ export default function Treino() {
   const [seriesFeitas, setSeriesFeitas] = useState({})
   const [seconds, setSeconds]           = useState(0)
   const [salvando, setSalvando]         = useState(false)
+  const [erroFinal, setErroFinal]       = useState(null)
 
   useEffect(() => {
     const interval = setInterval(() => setSeconds((s) => s + 1), 1000)
@@ -75,6 +76,7 @@ export default function Treino() {
 
   async function handleFinalizar() {
     setSalvando(true)
+    setErroFinal(null)
     try {
       await api.registrarSessao({
         treinoId: treino.id,
@@ -87,11 +89,10 @@ export default function Treino() {
           })),
       })
       await refreshMe()
-    } catch {
-      // falha silenciosa
-    } finally {
-      setSalvando(false)
       navigate('/')
+    } catch {
+      setErroFinal('Erro ao salvar sessão. Verifique sua conexão e tente novamente.')
+      setSalvando(false)
     }
   }
 
@@ -183,7 +184,12 @@ export default function Treino() {
           })}
         </div>
 
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-linear-to-t from-gray-100 via-gray-100/90 to-transparent">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-linear-to-t from-gray-100 via-gray-100/90 to-transparent flex flex-col gap-2">
+          {erroFinal && (
+            <p className="text-red-600 text-xs text-center bg-red-50 rounded-xl px-3 py-2 font-medium">
+              {erroFinal}
+            </p>
+          )}
           <button
             onClick={todosFeitos ? handleFinalizar : () => abrirDetalhe(primeiroIncompleto())}
             disabled={salvando}
