@@ -58,6 +58,16 @@ function TabAlunos({ onGerenciarTreinos }) {
 
   function updEdit(k) { return (e) => setFormEdit((f) => ({ ...f, [k]: e.target.value })) }
 
+  async function handleExcluirAluno(a) {
+    if (!window.confirm(`Excluir ${a.nome}? Todos os treinos, sessões e pagamentos serão removidos. Esta ação não pode ser desfeita.`)) return
+    try {
+      await api.admin.excluirAluno(a.id)
+      setAlunos((prev) => prev.filter((x) => x.id !== a.id))
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
   async function handleSalvarEditar(e) {
     e.preventDefault()
     setSalvando(true)
@@ -147,6 +157,12 @@ function TabAlunos({ onGerenciarTreinos }) {
                   className="p-2 rounded-xl bg-gray-50 text-gray-400 active:scale-95 transition-transform"
                 >
                   <Pencil size={15} />
+                </button>
+                <button
+                  onClick={() => handleExcluirAluno(a)}
+                  className="p-2 rounded-xl bg-red-50 text-red-400 active:scale-95 transition-transform"
+                >
+                  <Trash2 size={15} />
                 </button>
                 <button
                   onClick={() => onGerenciarTreinos(a)}

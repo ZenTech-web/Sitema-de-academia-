@@ -71,6 +71,7 @@ export const api = {
     criarAvaliacaoAluno: (id, body) => request(`/admin/usuarios/${id}/avaliacoes`, { method: 'POST', body: JSON.stringify(body) }),
     getStats:            ()         => request('/admin/stats'),
     editarAluno:         (id, body) => request(`/admin/usuarios/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+    excluirAluno:        (id)       => request(`/admin/usuarios/${id}`, { method: 'DELETE' }),
     editarTreinoAluno:   (alunoId, treinoId, body) => request(`/admin/usuarios/${alunoId}/treinos/${treinoId}`, { method: 'PATCH', body: JSON.stringify(body) }),
     excluirTreinoAluno:  (alunoId, treinoId) => request(`/admin/usuarios/${alunoId}/treinos/${treinoId}`, { method: 'DELETE' }),
   },
