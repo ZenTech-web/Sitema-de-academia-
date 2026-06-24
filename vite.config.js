@@ -4,6 +4,18 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  optimizeDeps: {
+    exclude: ['@react-pdf/renderer'],
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-pdf': ['@react-pdf/renderer'],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -12,6 +24,7 @@ export default defineConfig({
       includeAssets: ['icons/icon-192x192.png', 'icons/icon-512x512.png'],
       workbox: {
         globPatterns: ['**/*.{js,css,html,png,gif}'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
       manifest: {
         name: 'PowerFit',

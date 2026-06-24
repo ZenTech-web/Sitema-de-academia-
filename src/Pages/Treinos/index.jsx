@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ChevronRight, Trophy } from 'lucide-react'
+import { ChevronRight, Trophy, History } from 'lucide-react'
 import Header from '../../Components/Header'
 import { useAuth } from '../../context/AuthContext'
 import { formatDate } from '../../services/api'
@@ -20,7 +20,11 @@ export default function Treinos() {
       <Header
         title="Treinos"
         right={
-          <button className="text-xs font-semibold text-white/80 underline underline-offset-2">
+          <button
+            onClick={() => navigate('/progresso')}
+            className="flex items-center gap-1 text-xs font-semibold text-white/80 underline underline-offset-2"
+          >
+            <History size={14} />
             Histórico
           </button>
         }
@@ -53,13 +57,11 @@ export default function Treinos() {
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider font-medium mb-0.5">
-                Grupos musculares
-              </p>
-              <p className="text-sm font-semibold text-gray-800 leading-snug">
+              <p className="text-sm font-bold text-gray-800 leading-snug">{treino.nome}</p>
+              <p className="text-xs text-gray-400 mt-0.5">
                 {(treino.musculos ?? []).join(' / ') || 'Sem grupo definido'}
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-400 mt-0.5">
                 {treino.exercicios.length} exercícios
               </p>
             </div>

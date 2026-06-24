@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calculator, BarChart2, Ruler, Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
+import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calculator, BarChart2, Ruler, Pencil, Trash2, Eye, EyeOff, FileText } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts'
+import { pdf } from '@react-pdf/renderer'
+import { RelatorioAluno } from '../../Components/RelatorioPDF'
 import { useAuth } from '../../context/AuthContext'
 import { api, formatDate } from '../../services/api'
 
@@ -37,6 +39,7 @@ function TabAlunos({ onGerenciarTreinos }) {
   const [erroEdit, setErroEdit]       = useState(null)
   const [okEdit, setOkEdit]           = useState(false)
   const [mostrarSenhaEdit, setMostrarEdit] = useState(false)
+  const [gerandoPdf, setGerandoPdf]   = useState(null)
 
   useEffect(() => {
     api.admin.getAlunos()
@@ -90,6 +93,29 @@ function TabAlunos({ onGerenciarTreinos }) {
       setErroEdit(err.message)
     } finally {
       setSalvando(false)
+    }
+  }
+
+  async function handleGerarPdf(aluno) {
+    setGerandoPdf(aluno.id)
+    try {
+      const [avaliacoes, treinos] = await Promise.all([
+        api.admin.getAvaliacoesAluno(aluno.id),
+        api.admin.getTreinosAluno(aluno.id),
+      ])
+      const blob = await pdf(<RelatorioAluno aluno={aluno} avaliacoes={avaliacoes} treinos={treinos} />).toBlob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `relatorio_${aluno.nome.replace(/\s+/g, '_').toLowerCase()}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      setTimeout(() => URL.revokeObjectURL(url), 100)
+    } catch (err) {
+      alert('Erro ao gerar PDF: ' + err.message)
+    } finally {
+      setGerandoPdf(null)
     }
   }
 
@@ -178,6 +204,16 @@ function TabAlunos({ onGerenciarTreinos }) {
                   className="p-2 rounded-xl bg-red-50 text-red-400 active:scale-95 transition-transform"
                 >
                   <Trash2 size={15} />
+                </button>
+                <button
+                  onClick={() => handleGerarPdf(a)}
+                  disabled={gerandoPdf === a.id}
+                  className="p-2 rounded-xl bg-green-50 text-green-600 active:scale-95 transition-transform disabled:opacity-50"
+                  title="Gerar relatório PDF"
+                >
+                  {gerandoPdf === a.id
+                    ? <div className="w-3.75 h-3.75 border-2 border-green-300 border-t-green-600 rounded-full animate-spin" />
+                    : <FileText size={15} />}
                 </button>
                 <button
                   onClick={() => onGerenciarTreinos(a)}
@@ -298,6 +334,7 @@ function TabTreinos({ alunoInicial }) {
   const [editando, setEditando]         = useState(null)
   const [salvando, setSalvando]         = useState(false)
   const [ok, setOk]                     = useState(false)
+  const [okMsg, setOkMsg]               = useState('')
   const [erro, setErro]                 = useState(null)
   const [busca, setBusca]               = useState('')
 
@@ -390,8 +427,8 @@ function TabTreinos({ alunoInicial }) {
     try {
       await api.admin.excluirTreinoAluno(alunoId, treinoId)
       setTreinos((prev) => prev.filter((t) => t.id !== treinoId))
-    } catch {
-      // silencioso
+    } catch (err) {
+      alert(err.message)
     }
   }
 
@@ -429,7 +466,9 @@ function TabTreinos({ alunoInicial }) {
         })
         setTreinos((prev) => [...prev, novo])
       }
+      const msg = editando ? '✓ Treino atualizado!' : '✓ Treino criado com sucesso!'
       resetForm()
+      setOkMsg(msg)
       setOk(true)
       setTimeout(() => setOk(false), 2500)
     } catch (err) {
@@ -501,7 +540,7 @@ function TabTreinos({ alunoInicial }) {
 
           {ok && (
             <p className="text-green-600 text-sm text-center font-semibold bg-green-50 rounded-xl py-2">
-              ✓ Treino criado com sucesso!
+              {okMsg}
             </p>
           )}
 

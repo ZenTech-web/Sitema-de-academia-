@@ -85,7 +85,7 @@ export default function Treino() {
           .filter((e) => (seriesFeitas[e.id] ?? 0) > 0)
           .map((e) => ({
             exercicioId: e.id,
-            series: Array(seriesFeitas[e.id]).fill({ reps: e.repeticoes, carga: 0 }),
+            series: Array(seriesFeitas[e.id]).fill({ reps: e.repeticoes, carga: e.carga ?? 0 }),
           })),
       })
       await refreshMe()
