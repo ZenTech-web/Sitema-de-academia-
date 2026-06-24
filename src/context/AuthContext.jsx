@@ -25,10 +25,10 @@ export function AuthProvider({ children }) {
   }, [])
 
   async function login(email, senha) {
-    const { token, usuario } = await api.login(email, senha)
+    const { token } = await api.login(email, senha)
     localStorage.setItem(TOKEN_KEY, token)
-    setEstudante(usuario)
-    const meusTreinos = await api.getMeusTreinos()
+    const [me, meusTreinos] = await Promise.all([api.getMe(), api.getMeusTreinos()])
+    setEstudante(me)
     setTreinos(meusTreinos)
   }
 
