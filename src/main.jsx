@@ -9,7 +9,7 @@ import Treinos from './Pages/Treinos/index.jsx'
 import Treino from './Pages/Treino/index.jsx'
 import Mais from './Pages/Mais/index.jsx'
 import Pagamentos from './Pages/Pagamentos/index.jsx'
-import Adicionar from './Pages/Adicionar/index.jsx'
+import Progresso from './Pages/Progresso/index.jsx'
 import NotFound from './Pages/NotFound/index.jsx'
 
 const router = createBrowserRouter([
@@ -21,7 +21,7 @@ const router = createBrowserRouter([
       { path: 'treinos', element: <Treinos /> },
       { path: 'treino/:id', element: <Treino /> },
       { path: 'pagamentos', element: <Pagamentos /> },
-      { path: 'adicionar', element: <Adicionar /> },
+      { path: 'progresso', element: <Progresso /> },
       { path: 'mais', element: <Mais /> },
     ],
   },

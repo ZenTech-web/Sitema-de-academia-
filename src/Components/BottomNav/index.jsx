@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom'
-import { Home, CreditCard, Dumbbell, PlusCircle, MoreHorizontal } from 'lucide-react'
+import { Home, CreditCard, Dumbbell, TrendingUp, MoreHorizontal } from 'lucide-react'
 
 const ITEMS = [
-  { to: '/', icon: Home, label: 'Home', end: true },
-  { to: '/pagamentos', icon: CreditCard, label: 'Pagamentos' },
-  { to: '/treinos', icon: Dumbbell, label: 'Treino' },
-  { to: '/adicionar', icon: PlusCircle, label: 'Adicionar' },
-  { to: '/mais', icon: MoreHorizontal, label: 'Mais' },
+  { to: '/',          icon: Home,          label: 'Home',      end: true },
+  { to: '/treinos',   icon: Dumbbell,      label: 'Treinos'              },
+  { to: '/progresso', icon: TrendingUp,    label: 'Progresso'            },
+  { to: '/pagamentos',icon: CreditCard,    label: 'Pagamentos'           },
+  { to: '/mais',      icon: MoreHorizontal,label: 'Mais'                 },
 ]
 
 export default function BottomNav() {

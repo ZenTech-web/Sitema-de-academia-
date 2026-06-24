@@ -52,13 +52,22 @@ export const api = {
   // ── Biblioteca de exercícios ────────────────────────────
   getExercicios: () => request('/exercicios'),
 
+  // ── Stats do aluno ──────────────────────────────────────
+  getStats: () => request('/me/stats'),
+
+  // ── Avaliações do aluno ─────────────────────────────────
+  getMinhasAvaliacoes: () => request('/me/avaliacoes'),
+
   // ── Admin ───────────────────────────────────────────────
   admin: {
-    getAlunos:        ()      => request('/admin/usuarios'),
-    criarAluno:       (body)  => request('/admin/usuarios', { method: 'POST', body: JSON.stringify(body) }),
-    getTreinosAluno:  (id)    => request(`/admin/usuarios/${id}/treinos`),
-    criarTreinoAluno: (id, b) => request(`/admin/usuarios/${id}/treinos`, { method: 'POST', body: JSON.stringify(b) }),
-    getExercicios:    ()      => request('/admin/exercicios'),
+    getAlunos:           ()         => request('/admin/usuarios'),
+    criarAluno:          (body)     => request('/admin/usuarios', { method: 'POST', body: JSON.stringify(body) }),
+    getTreinosAluno:     (id)       => request(`/admin/usuarios/${id}/treinos`),
+    criarTreinoAluno:    (id, b)    => request(`/admin/usuarios/${id}/treinos`, { method: 'POST', body: JSON.stringify(b) }),
+    getExercicios:       ()         => request('/admin/exercicios'),
+    getAvaliacoesAluno:  (id)       => request(`/admin/usuarios/${id}/avaliacoes`),
+    criarAvaliacaoAluno: (id, body) => request(`/admin/usuarios/${id}/avaliacoes`, { method: 'POST', body: JSON.stringify(body) }),
+    getStats:            ()         => request('/admin/stats'),
   },
 }
 
