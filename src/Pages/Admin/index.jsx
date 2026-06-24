@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calculator, BarChart2, Ruler, Scale } from 'lucide-react'
+import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calculator, BarChart2, Ruler } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts'
