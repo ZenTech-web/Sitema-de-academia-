@@ -27,8 +27,8 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
       manifest: {
-        name: 'PowerFit',
-        short_name: 'PowerFit',
+        name: 'Imperious Fitness',
+        short_name: 'Imperious Fitness',
         description: 'Seu app de academia personalizado',
         theme_color: '#0056D2',
         background_color: '#ffffff',

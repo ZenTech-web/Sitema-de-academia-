@@ -30,7 +30,7 @@ export default function Login() {
         <div className="w-20 h-20 rounded-3xl bg-white flex items-center justify-center shadow-xl">
           <Dumbbell size={40} className="text-[#0056D2]" />
         </div>
-        <h1 className="text-3xl font-extrabold text-white tracking-tight">PowerFit</h1>
+        <h1 className="text-3xl font-extrabold text-white tracking-tight">Imperious Fitness</h1>
         <p className="text-blue-200 text-sm">Entre com sua conta</p>
       </div>
 

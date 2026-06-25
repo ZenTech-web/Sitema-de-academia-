@@ -3,8 +3,6 @@ import { Users, UserPlus, Dumbbell, LogOut, Check, ChevronDown, Activity, Calcul
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts'
-import { pdf } from '@react-pdf/renderer'
-import { RelatorioAluno } from '../../Components/RelatorioPDF'
 import { useAuth } from '../../context/AuthContext'
 import { api, formatDate } from '../../services/api'
 
@@ -99,9 +97,13 @@ function TabAlunos({ onGerenciarTreinos }) {
   async function handleGerarPdf(aluno) {
     setGerandoPdf(aluno.id)
     try {
-      const [avaliacoes, treinos] = await Promise.all([
-        api.admin.getAvaliacoesAluno(aluno.id),
-        api.admin.getTreinosAluno(aluno.id),
+      const [{ pdf }, { RelatorioAluno }, [avaliacoes, treinos]] = await Promise.all([
+        import('@react-pdf/renderer'),
+        import('../../Components/RelatorioPDF'),
+        Promise.all([
+          api.admin.getAvaliacoesAluno(aluno.id),
+          api.admin.getTreinosAluno(aluno.id),
+        ]),
       ])
       const blob = await pdf(<RelatorioAluno aluno={aluno} avaliacoes={avaliacoes} treinos={treinos} />).toBlob()
       const url = URL.createObjectURL(blob)
@@ -1180,7 +1182,7 @@ export default function Admin() {
       <header className="bg-[#0056D2] text-white px-4 h-14 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <Dumbbell size={20} />
-          <span className="font-extrabold text-base tracking-tight">PowerFit</span>
+          <span className="font-extrabold text-base tracking-tight">Imperious Fitness</span>
           <span className="text-xs text-blue-200 font-medium ml-1 bg-white/10 px-2 py-0.5 rounded-full">
             Admin
           </span>

@@ -1,6 +1,6 @@
 const BASE = 'https://powerfit-backend-kqxn.onrender.com/api'
 
-const TOKEN_KEY = 'powerfit_token'
+const TOKEN_KEY = 'imperious_token'
 
 function getToken() {
   return localStorage.getItem(TOKEN_KEY)

@@ -3,7 +3,7 @@ import { api } from '../services/api'
 
 const AuthContext = createContext(null)
 
-const TOKEN_KEY = 'powerfit_token'
+const TOKEN_KEY = 'imperious_token'
 
 export function AuthProvider({ children }) {
   const [estudante, setEstudante] = useState(null)

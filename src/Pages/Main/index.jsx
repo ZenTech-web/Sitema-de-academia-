@@ -37,13 +37,13 @@ export default function Home() {
 
       <div className="flex flex-col gap-3 p-4 -mt-3">
 
-        {/* Card PowerFit */}
+        {/* Card Imperious Fitness */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="flex items-center gap-3 px-4 py-4">
             <div className="w-10 h-10 rounded-xl bg-[#0056D2] flex items-center justify-center shrink-0">
               <Dumbbell size={20} className="text-white" />
             </div>
-            <span className="text-2xl font-extrabold text-[#0056D2] tracking-tight">PowerFit</span>
+            <span className="text-2xl font-extrabold text-[#0056D2] tracking-tight">Imperious Fitness</span>
           </div>
           <div className="bg-[#0056D2] px-4 py-2.5">
             <p className="text-white text-sm font-medium">

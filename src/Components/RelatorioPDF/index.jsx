@@ -126,13 +126,13 @@ export function RelatorioAluno({ aluno, avaliacoes, treinos }) {
   }
 
   return (
-    <Document title={`Relatório — ${aluno.nome}`} author="PowerFit">
+    <Document title={`Relatório — ${aluno.nome}`} author="Imperious Fitness">
       <Page size="A4" style={s.page}>
 
         {/* ── Header ── */}
         <View style={s.header}>
           <View>
-            <Text style={s.logo}>PowerFit</Text>
+            <Text style={s.logo}>Imperious Fitness</Text>
             <Text style={s.logoSub}>Sistema de Gestão de Academia</Text>
           </View>
           <View style={s.hRight}>
@@ -268,7 +268,7 @@ export function RelatorioAluno({ aluno, avaliacoes, treinos }) {
 
         {/* ── Footer fixo ── */}
         <View style={s.footer} fixed>
-          <Text style={s.footerTxt}>PowerFit — Relatório Confidencial · {aluno.nome}</Text>
+          <Text style={s.footerTxt}>Imperious Fitness — Relatório Confidencial · {aluno.nome}</Text>
           <Text style={s.footerTxt} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
         </View>
 
